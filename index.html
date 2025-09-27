@@ -4,6 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Toán Thầy Hà</title>
+<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+	<script>
+	window.MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],  // cho phép $...$
+    displayMath: [['$$','$$'], ['\\[','\\]']] // cho phép $$...$$
+  }
+	};
+	</script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .nav-btn { transition: background-color 0.2s, color 0.2s, border-color 0.2s; }
@@ -37,8 +47,9 @@
 <p id="examCodeDisplay" class="w-full text-center text-lg font-bold text-red-600 p-2 mt-1"></p>
             </div>
             
-            <div class="mb-3">
-                <label class="block font-medium">Số báo danh (VD: 540112)</label>
+// ==== sbd            
+<div class="mb-3">
+                <label class="block font-medium">Số báo danh (VD: 520112)</label>
                 <input type="text" id="studentId" class="w-full border rounded px-3 py-2 mt-1" required>
             </div>
             <div class="mb-3">
@@ -141,7 +152,7 @@
         const db = getFirestore(app);
 
         // ==========================================================
-        // == CHỈ CẦN THAY ĐỔI MÃ KỲ THI Ở ĐÂY CHO CÁC LẦN SAU    ==
+        // == CHỈ CẦN THAY ĐỔI MÃ KỲ THI Ở ĐÂY CHO CÁC LẦN SAU    == times
         // ==========================================================
         const EXAM_CODE = "Toan12_001";  //Mã kỳ thi(kiểm tra)
 	// Gán mã kỳ thi vào phần hiển thị trong HTML
@@ -150,7 +161,8 @@
         const TIME_LIMIT_SECONDS = 60 * 60; 
         const ATTEMPT_LIMIT = 500;
 
-        const originalQuizData = [
+// ==== nhapcauhoi       
+ const originalQuizData = [
     {
         "part": "Phần I: Trắc nghiệm nhiều lựa chọn",
         "type": "mcq",
@@ -314,7 +326,7 @@
         "part": "Phần III: Trả lời ngắn",
         "type": "short-answer",
         "question": "Cho hàm số $y = x^3 - 3x^2 + 1$ có đồ thị $(C)$. Tính độ dài đoạn thẳng nối hai điểm cực trị của đồ thị $(C)$. (Làm tròn đến hàng phần trăm)",
-        "a": "4,47"
+        "a": "4.47"
     },
     {
         "part": "Phần III: Trả lời ngắn",
@@ -326,9 +338,10 @@
         "part": "Phần III: Trả lời ngắn",
         "type": "short-answer",
         "question": "Cho hai vị trí A, B cách nhau 650m, cùng nằm về một phía bờ sông. Khoảng cách từ A và từ B đến bờ sông lần lượt là 150m và 290m. Một người đi từ A đến bờ sông để lấy nước mang về B. Đoạn đường ngắn nhất mà người đó có thể đi là bao nhiêu mét? (kết quả làm tròn đến hàng đơn vị)",
-        "a": "785"
+        "a": "780"
     }
-];
+]
+;
         let quizData = [];
         const totalQuestions = originalQuizData.length;
 
@@ -557,7 +570,8 @@
                 answersToSave[`q${index + 1}`] = userAnswer;
                 if (userAnswer === null) return;
 
-                switch (q.type) {
+// ==== tinhdiem                
+switch (q.type) {
                     case 'mcq':
                         if (userAnswer === q.a) totalScore += 0.5;
                         break;
