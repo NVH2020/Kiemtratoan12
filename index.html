@@ -495,7 +495,10 @@
                 case 'true-false': renderTrueFalse(question); break;
                 case 'short-answer': renderShortAnswer(question); break;
             }
-            
+			 if (window.MathJax) {
+        MathJax.typesetPromise();
+    }
+           
             prevBtn.classList.toggle('hidden', currentQuestionIndex === 0);
             nextBtn.classList.toggle('hidden', currentQuestionIndex === totalQuestions - 1);
         }
