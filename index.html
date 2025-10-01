@@ -89,6 +89,7 @@
                 </div>
             </form>
         </div>
+	<div id="countdown" class="text-red-600 font-bold text-lg my-2"></div>
         
         <div id="resultSection" class="hidden text-center">
             <h2 id="studentNameResult" class="text-2xl font-bold mb-2"></h2>
@@ -160,7 +161,47 @@
 		// === MÃ MỚI: THÊM DÒNG NÀY ĐỂ ĐẶT HẠN CHÓT === timeend
         // Định dạng: NĂM-THÁNG-NGÀY T Giờ:Phút:Giây (VD: 23:00:00 là 11 giờ tối)
         // Để trống ("") hoặc null nếu không muốn khóa bài thi.
-        const DEADLINE = "2025-10-03T07:00:00"; 
+	const START_TIME = "2025-10-03T20:00:00"; // Giờ mở đề
+        const DEADLINE = "2025-10-03T22:00:00";   // Giờ đóng đề
+	
+
+// Tạo đồng hồ đếm ngược
+function updateCountdown() {
+    const now = new Date();
+    const startDate = new Date(START_TIME);
+    const endDate = new Date(DEADLINE);
+
+    let message = "";
+
+    if (now < startDate) {
+        // Chưa tới giờ mở đề
+        const diff = startDate - now;
+        message = "⏳ Bài kiểm tra sẽ mở sau: " + formatDiff(diff);
+    } else if (now >= startDate && now <= endDate) {
+        // Đang trong thời gian làm bài
+        const diff = endDate - now;
+        message = "📝 Bài kiểm tra đang mở. Thời gian còn lại: " + formatDiff(diff);
+    } else {
+        // Đã hết hạn
+        message = "❌ Bài kiểm tra đã kết thúc.";
+    }
+
+    document.getElementById("countdown").innerText = message;
+}
+
+// Hàm đổi mili giây thành giờ:phút:giây
+function formatDiff(ms) {
+    let totalSeconds = Math.floor(ms / 1000);
+    let hours = Math.floor(totalSeconds / 3600);
+    let minutes = Math.floor((totalSeconds % 3600) / 60);
+    let seconds = totalSeconds % 60;
+    return hours + "h " + minutes + "m " + seconds + "s";
+}
+
+// Cập nhật mỗi giây
+setInterval(updateCountdown, 1000);
+updateCountdown();
+
 
 // ===== nhapcauhoi cauhoi        
         const originalQuizData = [{
@@ -347,18 +388,26 @@
             return shuffledQuiz;
         }
 
-        startBtn.addEventListener("click", async () => {
-			// === MÃ MỚI: KIỂM TRA HẠN CHÓT NGAY KHI NHẤN NÚT ===
-            if (DEADLINE) {
-                const now = new Date();
-                const deadlineDate = new Date(DEADLINE);
-                if (now > deadlineDate) {
-                    alert(`Bài kiểm tra đã kết thúc vào lúc ${deadlineDate.toLocaleString('vi-VN')}. Không thể nhận thêm bài làm.`);
-                    startBtn.disabled = true;
-                    startBtn.textContent = "Đã hết hạn làm bài";
-                    startBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
-                    startBtn.classList.remove('bg-blue-500', 'hover:bg-blue-600');
-                    return; // Dừng lại, không cho làm bài
+       startBtn.addEventListener("click", async () => {
+    	const now = new Date();
+
+    	if (START_TIME) {
+        const startDate = new Date(START_TIME);
+        if (now < startDate) {
+            alert(`Bài kiểm tra chỉ mở từ ${startDate.toLocaleString('vi-VN')}. Vui lòng quay lại sau.`);
+            return;
+        	}
+    	}
+
+    	if (DEADLINE) {
+        const deadlineDate = new Date(DEADLINE);
+        if (now > deadlineDate) {
+            alert(`Bài kiểm tra đã kết thúc vào lúc ${deadlineDate.toLocaleString('vi-VN')}. Không thể nhận thêm bài làm.`);
+            startBtn.disabled = true;
+            startBtn.textContent = "Đã hết hạn làm bài";
+            startBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
+            startBtn.classList.remove('bg-blue-500', 'hover:bg-blue-600');
+            return; // Dừng lại, không cho làm bài
                 }
             }
             const studentId = document.getElementById("studentId").value.trim();
